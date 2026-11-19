@@ -1,0 +1,25 @@
+backend: {name: git-gateway, branch: main}
+media_folder: gorseller
+public_folder: /gorseller
+locale: tr
+collections:
+  - name: ilanlar
+    label: İlanlar
+    folder: ilanlar
+    extension: json
+    format: json
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - {label: Başlık, name: baslik, widget: string}
+      - {label: İşlem, name: islem, widget: select, options: [{label: Satılık, value: satilik}, {label: Kiralık, value: kiralik}]}
+      - {label: Tür, name: tur, widget: select, options: [{label: Daire, value: daire}, {label: Arsa, value: arsa}, {label: İş yeri, value: is-yeri}, {label: Müstakil ev, value: mustakil-ev}]}
+      - {label: Mahalle, name: mahalle, widget: select, options: [{label: Çay, value: cay}, {label: Mustafa Kemal, value: mustafa-kemal}, {label: Meydan, value: meydan}, {label: Dumlupınar, value: dumlupinar}, {label: Merkez, value: merkez}, {label: Kurtuluş, value: kurtulus}]}
+      - {label: Fiyat (TL), name: fiyat, widget: number, value_type: int}
+      - {label: Metrekare, name: m2, widget: number, required: false}
+      - {label: Oda sayısı, name: oda, widget: string, required: false}
+      - {label: Bina yaşı, name: bina_yasi, widget: string, required: false}
+      - {label: Bulunduğu kat, name: kat, widget: string, required: false}
+      - {label: Açıklama, name: aciklama, widget: text}
+      - {label: Fotoğraflar, name: foto, widget: list, required: false, field: {label: Fotoğraf, name: f, widget: image}}
+      - {label: Yayında, name: yayinda, widget: boolean, default: true}

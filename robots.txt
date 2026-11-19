@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /yonetim/
+Disallow: /tesekkurler/
+Sitemap: https://ipeksanemlak.com.tr/sitemap.xml

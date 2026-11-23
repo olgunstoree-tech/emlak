@@ -11,11 +11,34 @@ export default async (req) => {
       headers: { "Content-Type": "application/json" },
     });
 
-  if (req.method !== "POST") return json({ error: "yalnizca-post" }, 405);
-
   let key = "";
   try { key = globalThis.Netlify?.env?.get("GEMINI_KEY") || ""; } catch (e) {}
   if (!key) key = (globalThis.process?.env?.GEMINI_KEY) || "";
+
+  // Tarayicidan acilabilen canli teshis: /api/sor
+  if (req.method === "GET") {
+    const rapor = { anahtar: key ? "VAR (" + key.length + " karakter)" : "YOK", modeller: {} };
+    if (!key) { rapor.sonuc = "Netlify'da GEMINI_KEY tanimli degil veya deploy yenilenmedi."; return json(rapor); }
+    for (const model of MODELLER) {
+      try {
+        const r = await fetch(
+          "https://generativelanguage.googleapis.com/v1beta/models/" + model + ":generateContent",
+          { method: "POST",
+            headers: { "Content-Type": "application/json", "x-goog-api-key": key },
+            body: JSON.stringify({ contents: [{ role: "user", parts: [{ text: "test" }] }],
+                                   generationConfig: { maxOutputTokens: 16 } }) });
+        rapor.modeller[model] = r.ok ? "CALISIYOR" : ("HTTP " + r.status +
+          (r.status === 429 ? " (gunluk ucretsiz kota dolmus)" :
+           r.status === 403 ? " (anahtar yetkisiz)" :
+           r.status === 404 ? " (model bu hesapta yok)" : ""));
+      } catch (e) { rapor.modeller[model] = "baglanti hatasi"; }
+    }
+    rapor.sonuc = Object.values(rapor.modeller).some(v => v === "CALISIYOR")
+      ? "Yapay zeka CALISIYOR." : "Hicbir model cevap vermedi. Yukaridaki kodlara bakin.";
+    return json(rapor);
+  }
+
+  if (req.method !== "POST") return json({ error: "yalnizca-post" }, 405);
   if (!key) return json({ error: "anahtar-yok" }, 503);
 
   let govde;

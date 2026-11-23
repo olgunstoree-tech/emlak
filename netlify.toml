@@ -1,0 +1,15 @@
+# Hazir (derlenmis) siteyi yayinlamak icin.
+# GitHub'a bu klasorun TAMAMI atilir; anahtar DISARIDA kalir.
+# Anahtar: Netlify panel > Site configuration > Environment variables > GEMINI_KEY
+
+[build]
+  publish = "."
+  functions = "netlify/functions"
+
+# Netlify Functions v2 zaten export const config ile /api/sor yolunu aliyor.
+# Asagidaki yonlendirme eski surumler icin emniyet kemeri.
+[[redirects]]
+  from = "/api/sor"
+  to = "/.netlify/functions/sor"
+  status = 200
+  force = false
